@@ -56,4 +56,47 @@ void *mymalloc(size_t size, char *file, int line){
         memoryStart += ((currentNode->size) + sizeof(chunkNode));
     }
     return NULL; //if no space is found that matches the requested amount of bytes, return NULL or "space unavailable"
+    typedef struct {
+    size_t size;     // Size of the chunk (payload + header)
+    int allocated;   // Flag to indicate if the chunk is allocated (1) or free (0)
+} ChunkHeader;
+
+
+void myfree(void *ptr, char *file, int line) {
+    // Check if the pointer is NULL
+    if (ptr == NULL) {
+        // Report error: Attempting to free a NULL pointer
+        fprintf(stderr, "Pointer is NULL in file '%s' on line %d\n", file, line);
+        return;
+    }
+
+    // Calculate the address of the chunk header
+    ChunkHeader *header = (ChunkHeader*)((char*)ptr - sizeof(ChunkHeader));
+
+    // Validate if the pointer points to a valid memory chunk
+    if (header->allocated != 1) {
+        // Report error: Attempting to free memory that was not allocated by malloc
+        fprintf(stderr, "Attempting to free memory that was not malloced in file '%s' on line %d\n", file, line);
+        return;
+    }
+
+    // Mark the chunk as free
+    header->allocated = 0;
+
+    // Coalesce free chunks if possible
+    // Coalescing with the previous chunk
+    ChunkHeader *prev_header = (ChunkHeader*)((char*)header - sizeof(ChunkHeader));
+    if (prev_header >= (ChunkHeader*)memory && prev_header->allocated == 0) {
+        // Coalesce with previous chunk
+        prev_header->size += header->size + sizeof(ChunkHeader);
+        header = prev_header; // Update header to point to the coalesced chunk
+    }
+
+    // Coalescing with the next chunk
+    ChunkHeader *next_header = (ChunkHeader*)((char*)header + header->size + sizeof(ChunkHeader));
+    if ((char*)next_header < (char*)memory + MEMLENGTH && next_header->allocated == 0) {
+        // Coalesce with next chunk
+        header->size += next_header->size + sizeof(ChunkHeader);
+    }
+}
 }

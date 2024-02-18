@@ -16,11 +16,9 @@ typedef struct Node {
     int allocated;
 } chunkNode;
 
-// for sizeof(chunkNode), we can probably just switch all of them out to HEADERSIZE, because these will be the same # universally. 
-
 void initializeMemory() {
     chunkNode *memStart = (chunkNode *)memory;
-    memStart->size = MEMSIZE - sizeof(chunkNode);
+    memStart->size = MEMSIZE;
     memStart->allocated = 0;
 }
 void *mymalloc(size_t size, char *file, int line){
@@ -43,9 +41,9 @@ void *mymalloc(size_t size, char *file, int line){
         chunkNode *currentNode = (chunkNode *)memoryStart; //memoryStart gets casted to a pointer of type chunkNode to access the metadata at the current chunk
         if(currentNode->allocated == 0 && currentNode->size >= size){ 
             //if the current chunk's metadata represents a free chunk, whose size is greater than/equalto the requested size, than the requested chunk has been found
-            if (currentNode->size > size + sizeof(chunkNode)){ //need to ask a question about the size, does the size of the chunk include the amount of bytes (8) in metadata?
-                chunkNode *newNode = (chunkNode *)(memoryStart + size + sizeof(chunkNode));
-                newNode->size = currentNode->size - size - sizeof(chunkNode);
+            if (currentNode->size > size) { 
+                chunkNode *newNode = (chunkNode *)(memoryStart + size)
+                newNode->size = currentNode->size - size;
                 newNode->allocated = 0;
                 currentNode->size = size;
             }
@@ -53,14 +51,9 @@ void *mymalloc(size_t size, char *file, int line){
             return memoryStart + sizeof(chunkNode);
     
         }
-        memoryStart += ((currentNode->size) + sizeof(chunkNode));
+        memoryStart += ((currentNode->size));
     }
     return NULL; //if no space is found that matches the requested amount of bytes, return NULL or "space unavailable"
-    typedef struct {
-    size_t size;     // Size of the chunk (payload + header)
-    int allocated;   // Flag to indicate if the chunk is allocated (1) or free (0)
-} ChunkHeader;
-
 
 void myfree(void *ptr, char *file, int line) {
     // Check if the pointer is NULL

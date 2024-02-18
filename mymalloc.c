@@ -42,7 +42,7 @@ void *mymalloc(size_t size, char *file, int line){
         if(currentNode->allocated == 0 && currentNode->size >= size){ 
             //if the current chunk's metadata represents a free chunk, whose size is greater than/equalto the requested size, than the requested chunk has been found
             if (currentNode->size > size) { 
-                chunkNode *newNode = (chunkNode *)(memoryStart + size)
+                chunkNode *newNode = (chunkNode *)(memoryStart + size);
                 newNode->size = currentNode->size - size;
                 newNode->allocated = 0;
                 currentNode->size = size;

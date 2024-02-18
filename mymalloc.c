@@ -71,7 +71,7 @@ void myfree(void *ptr, char *file, int line) {
     }
 
     // Calculate the address of the chunk header
-    ChunkHeader *header = (ChunkHeader*)((char*)ptr - sizeof(ChunkHeader));
+    chunkNode *header = (chunkNode*)((char*)ptr - sizeof(chunkNode));
 
     // Validate if the pointer points to a valid memory chunk
     if (header->allocated != 1) {
@@ -85,18 +85,17 @@ void myfree(void *ptr, char *file, int line) {
 
     // Coalesce free chunks if possible
     // Coalescing with the previous chunk
-    ChunkHeader *prev_header = (ChunkHeader*)((char*)header - sizeof(ChunkHeader));
-    if (prev_header >= (ChunkHeader*)memory && prev_header->allocated == 0) {
+    chunkNode *prev_header = (chunkNode*)((char*)header - sizeof(chunkNode));
+    if (prev_header >= (chunkNode*)memory && prev_header->allocated == 0) {
         // Coalesce with previous chunk
-        prev_header->size += header->size + sizeof(ChunkHeader);
+        prev_header->size += header->size + sizeof(chunkNode);
         header = prev_header; // Update header to point to the coalesced chunk
     }
 
     // Coalescing with the next chunk
-    ChunkHeader *next_header = (ChunkHeader*)((char*)header + header->size + sizeof(ChunkHeader));
+    chunkNode *next_header = (chunkNode*)((char*)header + header->size + sizeof(chunkNode));
     if ((char*)next_header < (char*)memory + MEMLENGTH && next_header->allocated == 0) {
         // Coalesce with next chunk
-        header->size += next_header->size + sizeof(ChunkHeader);
+        header->size += next_header->size + sizeof(chunkNode);
     }
-}
 }

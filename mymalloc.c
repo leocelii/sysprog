@@ -82,7 +82,7 @@ void myfree(void *ptr, char *file, int line) {
     // Coalesce free chunks if possible
     // Coalescing with the previous chunk
     
-    chunkNode *prev_header = (chunkNode*)((char*)header - sizeof(chunkNode));
+    chunkNode *prev_header = (chunkNode*)((char*)header - ); //how do we find the address of the previous chunk (header/metadata)?
     if (prev_header >= (char*)memory && prev_header->allocated == 0) {
         // Coalesce with previous chunk
         prev_header->size += header->size;

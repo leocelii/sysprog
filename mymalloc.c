@@ -54,6 +54,7 @@ void *mymalloc(size_t size, char *file, int line){
         memoryStart += ((currentNode->size));
     }
     return NULL; //if no space is found that matches the requested amount of bytes, return NULL or "space unavailable"
+}
 
 void myfree(void *ptr, char *file, int line) {
     // Check if the pointer is NULL

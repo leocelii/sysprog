@@ -68,7 +68,7 @@ void myfree(void *ptr, char *file, int line) {
     char *memoryEnd = memoryStart + MEMSIZE;
 
     // Validate if the pointer points to a valid memory chunk
-    if ((ptr < memoryStart) || (ptr >= memoryEnd) || (current_header->allocated != 1)) {
+    if (((char*)current_header < memoryStart) || ((char*)current_header >= memoryEnd) || (current_header->allocated != 1)) {
         // Report error: Attempting to free memory that was not allocated by malloc or attempting to free memory that is out of bounds and therefore also not allocated by malloc.
         fprintf(stderr, "Attempting to free memory that was not malloced in file '%s' on line %d\n", file, line);
         return;
@@ -104,4 +104,4 @@ void myfree(void *ptr, char *file, int line) {
             next_header = (chunkNode *)((char*)current_header + current_header->size + HEADERSIZE);
         }
     }
-}
+

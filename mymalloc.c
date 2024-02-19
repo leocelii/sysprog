@@ -83,7 +83,7 @@ void myfree(void *ptr, char *file, int line) {
     //chunkNode *prev_header = (chunkNode*)((char*)current_header - ); //how do we find the address of the previous chunk (header/metadata)?
 
     
-    if ((char*)current_header > (char*)memory + HEADERSIZE)) { //checks if first chunk/ if it is, there is no previous chunk.
+    if ((char*)current_header > (char*)memory + HEADERSIZE) { //checks if first chunk/ if it is, there is no previous chunk.
         chunkNode* prev_header = (chunkNode*)memory; //simple but less efficient way of iterating through all previous chunks until we find the immediate previous
         while ((char*)prev_header + HEADERSIZE + prev_header->size != (char*)current_header) {
             prev_header = (chunkNode*)((char*)prev_header + HEADERSIZE + prev_header->size);

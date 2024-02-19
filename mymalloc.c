@@ -32,7 +32,7 @@ void *mymalloc(size_t size, char *file, int line){
     initializeMemory(); //initialize memory array;
     }
     
-    int newByteSize = (size + 7) & -7; //ensures that requested size is rounded up to the nearest multiple of 8
+    int newByteSize = (size + 7) & ~7; //ensures that requested size is rounded up to the nearest multiple of 8
     size = (newByteSize < 16) ? 16 : newByteSize; //ensures that the size is at least minimum chunk size of 16, 8 min for metadata, 8 min. for payload
     
     char *memoryStart = (char*)memory; //setup for byte-width pointer arithmetic

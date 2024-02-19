@@ -68,7 +68,7 @@ void myfree(void *ptr, char *file, int line) {
     char *memoryEnd = memoryStart + MEMSIZE;
 
     // Validate if the pointer points to a valid memory chunk
-    if ((ptr <= memoryStart) || (ptr >= memoryEnd) || (current_header->allocated != 1)) {
+    if ((ptr < memoryStart) || (ptr >= memoryEnd) || (current_header->allocated != 1)) {
         // Report error: Attempting to free memory that was not allocated by malloc or attempting to free memory that is out of bounds and therefore also not allocated by malloc.
         fprintf(stderr, "Attempting to free memory that was not malloced in file '%s' on line %d\n", file, line);
         return;
@@ -76,22 +76,32 @@ void myfree(void *ptr, char *file, int line) {
 
     // Mark the chunk as free
     current_header->allocated = 0;
+    
 
     // Coalesce free chunks if possible
     // Coalescing with the previous chunk
+    //chunkNode *prev_header = (chunkNode*)((char*)current_header - ); //how do we find the address of the previous chunk (header/metadata)?
+
     
-    chunkNode *prev_header = (chunkNode*)((char*)current_header - ); //how do we find the address of the previous chunk (header/metadata)?
-    if (prev_header >= (char*)memory && prev_header->allocated == 0) {
-        // Coalesce with previous chunk
-        prev_header->size += current_header->size + HEADERSIZE;
-        current_header = prev_header; // Update header to point to the coalesced chunk
+    if ((char*)current_header > (char*)memory + HEADERSIZE)) { //checks if first chunk/ if it is, there is no previous chunk.
+        chunkNode* prev_header = (chunkNode*)memory; //simple but less efficient way of iterating through all previous chunks until we find the immediate previous
+        while ((char*)prev_header + HEADERSIZE + prev_header->size != (char*)current_header) {
+            prev_header = (chunkNode*)((char*)prev_header + HEADERSIZE + prev_header->size);
+        }
+        if (prev_header->allocated == 0) {
+            // Coalesce with previous chunk
+            prev_header->size += current_header->size + HEADERSIZE;
+            current_header = prev_header; // Update header to point to the coalesced chunk
+        }
+        // Coalescing with the next chunk
     }
 
-    // Coalescing with the next chunk
-    
-    chunkNode *next_header = (chunkNode*)((char*)current_header + current_header->size + HEADERSIZE);
-    if ((char*)next_header < ((char*)memory + MEMLENGTH) && next_header->allocated == 0) {
-        // Coalesce with next chunk
-        current_header->size += next_header->size;
+    if ((char*)current_header + current_header->size + HEADERSIZE < (char*)memory + MEMSIZE) { // checks if first chunk/ if its is there is no previous chunk.
+        chunkNode *next_header = (chunkNode*)((char*)current_header + current_header->size + HEADERSIZE); //current chunk header plus CHUNKSIZE = next chunk, CHUNKSIZE = (payload size + headersize) 
+        if (((char*)next_header < ((char*)memory + MEMSIZE)) && next_header->allocated == 0) {
+            // Coalesce with next chunk
+            current_header->size += next_header->size + HEADERSIZE;
+            next_header = (chunkNode *)((char*)current_header + current_header->size + HEADERSIZE);
+        }
     }
 }

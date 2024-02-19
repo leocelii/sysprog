@@ -28,7 +28,7 @@ void *mymalloc(size_t size, char *file, int line){
 
     //if memory array has not been intialized, and mymalloc is called for the first time, then this step will initialize the memory array
     chunkNode *memoryInitialized = (chunkNode*)memory;
-    if (memoryInitialized->size <= 0 || memoryInitialized->size > MEMSIZE || memoryInitialized->allocated != 0 && memoryInitialized->allocated != 1) {
+    if (memoryInitialized->size <= 0 || memoryInitialized->size > MEMSIZE || (memoryInitialized->allocated != 0 && memoryInitialized->allocated != 1)) {
     initializeMemory(); //initialize memory array;
     }
     

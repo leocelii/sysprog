@@ -90,8 +90,8 @@ void myfree(void *ptr, char *file, int line) {
     // Coalescing with the next chunk
     
     chunkNode *next_header = (chunkNode*)((char*)current_header + current_header->size + HEADERSIZE);
-    if ((char*)next_header < (char*)memory + MEMLENGTH && next_header->allocated == 0) {
+    if ((char*)next_header < ((char*)memory + MEMLENGTH) && next_header->allocated == 0) {
         // Coalesce with next chunk
-        header->size += next_header->size;
+        current_header->size += next_header->size;
     }
 }

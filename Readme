@@ -1,0 +1,53 @@
+# Project 1 README
+
+## Authors:
+- Leo Celii (lgc59)
+- Ammar Ghauri (amg610)
+
+## Description:
+Description
+Header Definitions
+The code begins with standard C library includes (stdio.h, stdlib.h, unistd.h, string.h) and includes a custom header file mymalloc.h. Preprocessor directives define constants such as MEMSIZE, HEADERSIZE, OBJECTS, OBJSIZE, and MEMLENGTH to manage memory allocation parameters. Additionally, a static array memory of type double serves as the memory pool for dynamic allocation.
+
+Data Structures:
+	A chunkNode struct was used to define and represent metadata associated with each memory chunk. It contains two fields: size, indicating the size of the chunk, and allocated, indicating whether the chunk is in use or free.
+
+Memory Initialization:
+	The initializeMemory() function sets up the initial state of the memory pool. It initializes the first chunk with the total memory size minus the header size and marks it as free.
+
+Memory Allocation (mymalloc()):
+- The mymalloc() function that was coded is responsible for allocating memory of the requested size. It performs the following steps:
+
+  	- Checks if the requested size is zero and returns NULL if so.
+  	- Initializes the memory array if it hasn't been previously initialized.
+  	- Rounds up the requested size to the nearest multiple of 8 for alignment.
+  	- Iterates through the memory pool to find a suitable free chunk of memory.
+  	- If a suitable chunk is found, marks it as allocated and returns a pointer to the payload.
+  	- Implements splitting of large chunks to avoid fragmentation.
+  	- Memory Deallocation (myfree())
+  	- The myfree() function deallocates memory previously allocated by mymalloc(). Key features include:
+
+		- Checks if the pointer provided is NULL and returns without performing any actions.
+		- Validates that the pointer points to a valid memory chunk allocated by mymalloc().
+		- Marks the corresponding memory block as free and updates metadata accordingly.
+		- Implements coalescing of adjacent free chunks to prevent memory fragmentation.
+		- Error Handling
+		- Both mymalloc() and myfree() functions incorporate error handling mechanisms to detect and report common usage errors. They utilize the __FILE__ and __LINE__ 	
+		- macros to capture source file names and line numbers for error reporting.
+
+Design Rationale
+-----------------
+Memory Organization:
+The use of a static array (memory) provides a fixed-size memory pool for allocation. We believe that this ensures deterministic behavior and simplified management. Each chunk is associated with metadata (header) to track its size and allocation status which allows efficient memory management.
+
+Allocation Strategy:
+mymalloc() employs a first-fit allocation strategy, iterating through the memory pool to find the first suitable free chunk of memory. This approach balances simplicity and efficiency, accommodating varying allocation sizes while minimizing fragmentation.
+
+Alignment and Size Considerations:
+To ensure memory alignment and accommodate small allocations, mymalloc() rounds up the requested size to the nearest multiple of 8. Additionally, it enforces a minimum chunk size of 16 bytes to accommodate both metadata and payload, optimizing memory usage.
+
+Error Detection and Reporting:
+The implementation incorporates robust error detection mechanisms to identify common usage errors, such as double frees or invalid memory accesses. By leveraging preprocessor macros for file and line number tracking, it provides informative error messages for debugging and troubleshooting.
+
+Conclusion:
+The custom memory allocation implementation offers a lightweight yet reliable solution for dynamic memory management in C programs. By adhering to established design principles and incorporating error handling mechanisms, it aims to enhance program robustness and facilitate memory-related debugging. Further optimization and customization can be achieved based on specific project requirements and performance considerations.

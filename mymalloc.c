@@ -29,12 +29,11 @@ void *mymalloc(size_t size, char *file, int line){
     //if memory array has not been intialized, and mymalloc is called for the first time, then this step will initialize the memory array
     chunkNode *memoryInitialized = (chunkNode*)memory;
     if (memoryInitialized->size <= 0 || memoryInitialized->size > MEMSIZE || (memoryInitialized->allocated != 0 && memoryInitialized->allocated != 1)) {
-    initializeMemory(); //initialize memory array;
+    initializeMemory(); //initialize memory array
     }
-    
+
     int newByteSize = (size + 7) & ~7; //ensures that requested size is rounded up to the nearest multiple of 8
     size = (newByteSize < 8) ? 8 : newByteSize; //ensures that the size is at least minimum payload size of 8 bytes
-    
     char *memoryStart = (char*)memory; //setup for byte-width pointer arithmetic
     while (memoryStart < ((char*)memory + MEMSIZE)) { //within range of memory
         chunkNode *currentNode = (chunkNode*)memoryStart; //memoryStart gets casted to a pointer of type chunkNode to access the metadata at the current chunk
@@ -47,7 +46,7 @@ void *mymalloc(size_t size, char *file, int line){
             }
             currentNode->allocated = 1;
             return memoryStart + HEADERSIZE;
-    
+
         }
         memoryStart += ((currentNode->size) + HEADERSIZE);
     }
@@ -76,15 +75,15 @@ void myfree(void *ptr, char *file, int line) {
     }
     // Check if chunk is already unallocated, double free
     if (current_header->allocated == 0) {
-        fprintf(stderr, "Attempting to free memory that has already been freed, in file '%s' on line %d\n", file, line);
-        return;
+	fprintf(stderr, "Attempting to free memory that has already been freed, in file '%s' on line %d\n", file, line);
+	return;	
     }
     // Mark the chunk as free
     current_header->allocated = 0;
-    
+
     // Coalesce free chunks if possible
     // Coalescing with the previous chunk
-    
+
     if ((char*)current_header > (char*)memory + HEADERSIZE) { //checks if first chunk/ if it is, there is no previous chunk.
         chunkNode* prev_header = (chunkNode*)memory; //simple but less efficient way of iterating through all previous chunks until we find the immediate previous
         while ((char*)prev_header + HEADERSIZE + prev_header->size != (char*)current_header) {
@@ -95,7 +94,7 @@ void myfree(void *ptr, char *file, int line) {
             prev_header->size += current_header->size + HEADERSIZE;
             current_header = prev_header; // Update header to point to the coalesced chunk
         }
-        // Coalescing with the next chunk
+        
     }
 
     if ((char*)current_header + current_header->size + HEADERSIZE < (char*)memory + MEMSIZE) { // checks if first chunk/ if its is there is no previous chunk.

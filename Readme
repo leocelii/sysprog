@@ -4,7 +4,7 @@
 - Leo Celii (lgc59)
 - Ammar Ghauri (amg610)
 
-## Description:
+## Design Notes:
 Description
 Header Definitions
 The code begins with standard C library includes (stdio.h, stdlib.h, unistd.h, string.h) and includes a custom header file mymalloc.h. Preprocessor directives define constants such as MEMSIZE, HEADERSIZE, OBJECTS, OBJSIZE, and MEMLENGTH to manage memory allocation parameters. Additionally, a static array memory of type double serves as the memory pool for dynamic allocation.

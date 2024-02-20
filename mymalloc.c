@@ -14,6 +14,7 @@ static double memory[MEMLENGTH];
 typedef struct Node {
     int size;
     int allocated;
+    // struct Node* prev;  // Pointer to the previous chunk's metadata *****************
 } chunkNode;
 
 void initializeMemory() {
@@ -104,4 +105,33 @@ void myfree(void *ptr, char *file, int line) {
             next_header = (chunkNode *)((char*)current_header + current_header->size + HEADERSIZE);
         }
     }
+
+
+
+
+
+
+
+
+
+//chunkNode *prev_header = header->prev;
+  //  if (prev_header != NULL && prev_header->allocated == 0) {
+    //    // Coalesce with previous chunk
+      //  prev_header->size += header->size + sizeof(chunkNode);
+        //header = prev_header; // Update header to point to the coalesced chunk
+    //}
+
+    // Coalescing with the next chunk
+    //chunkNode *next_header = (chunkNode*)((char*)header + header->size + sizeof(chunkNode));
+    //if ((char*)next_header < memoryEnd && next_header->allocated == 0) {
+        // Coalesce with next chunk
+      //  header->size += next_header->size + sizeof(chunkNode);
+    //}
+
+    // Update the prev pointer of the next chunk, if it exists
+    //chunkNode *next_next_header = (chunkNode*)((char*)header + header->size + sizeof(chunkNode));
+    //if ((char*)next_next_header < memoryEnd) {
+      //  next_next_header->prev = header;
+    //}
+// }
 

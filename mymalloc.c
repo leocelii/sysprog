@@ -51,6 +51,7 @@ void *mymalloc(size_t size, char *file, int line){
         }
         memoryStart += ((currentNode->size) + HEADERSIZE);
     }
+    fprintf(stderr, "No space is found that matches the requested amount of bytes from file '%s' on line %d\n", file, line);
     return NULL; //if no space is found that matches the requested amount of bytes, return NULL or "space unavailable"
 }
 

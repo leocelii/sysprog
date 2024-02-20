@@ -33,7 +33,7 @@ void *mymalloc(size_t size, char *file, int line){
     }
     
     int newByteSize = (size + 7) & ~7; //ensures that requested size is rounded up to the nearest multiple of 8
-    size = (newByteSize < 16) ? 16 : newByteSize; //ensures that the size is at least minimum chunk size of 16, 8 min for metadata, 8 min. for payload
+    size = (newByteSize < 8) ? 8 : newByteSize; //ensures that the size is at least minimum payload size of 8 bytes
     
     char *memoryStart = (char*)memory; //setup for byte-width pointer arithmetic
     while (memoryStart < ((char*)memory + MEMSIZE)) { //within range of memory
@@ -74,15 +74,16 @@ void myfree(void *ptr, char *file, int line) {
         fprintf(stderr, "Attempting to free memory that was not malloced in file '%s' on line %d\n", file, line);
         return;
     }
-
+    // Check if chunk is already unallocated, double free
+    if (current_header->allocated == 0) {
+        fprintf(stderr, "Attempting to free memory that has already been freed, in file '%s' on line %d\n", file, line);
+        return;
+    }
     // Mark the chunk as free
     current_header->allocated = 0;
     
-
     // Coalesce free chunks if possible
     // Coalescing with the previous chunk
-    //chunkNode *prev_header = (chunkNode*)((char*)current_header - ); //how do we find the address of the previous chunk (header/metadata)?
-
     
     if ((char*)current_header > (char*)memory + HEADERSIZE) { //checks if first chunk/ if it is, there is no previous chunk.
         chunkNode* prev_header = (chunkNode*)memory; //simple but less efficient way of iterating through all previous chunks until we find the immediate previous
@@ -105,4 +106,4 @@ void myfree(void *ptr, char *file, int line) {
             next_header = (chunkNode *)((char*)current_header + current_header->size + HEADERSIZE);
         }
     }
-
+}

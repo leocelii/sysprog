@@ -85,7 +85,11 @@ int main () {
 	// as per the random choice between the allocating and deallocating. Howevever, it is likely that free runs
 	// for a number of times in the 40's, and perhaps very close to 50, if not 50. To address this concern, 
 	// instead we calculated the average of the mymalloc and myfree runs, using not 50, but using a count 
-	// of the number of times each function was used/called.
+	// of the number of times each function was used/called. Through a number of trial runs, we've determined 
+	// that myfree was called usually in the high 40's, and somtimes it would reach and exceed 50. We figured
+	// this would not make a difference in reporting accuracy, as the average time to run say, for example, 47 
+	// trials, will be roughly the same as the average time to run all 50 trials. 
+	
 	printf("The average time needed for a successful call to the mymalloc function is: %f milliseconds.\n", (mallocAvgTime / mallocTaskCount)); 
 	printf("The average time needed for a successful call to the myfree function is: %f milliseconds.\n", (freeAvgTime / freeTaskCount)); 
 

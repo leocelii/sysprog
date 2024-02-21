@@ -1,22 +1,23 @@
 # Project 1 README
 
 ## Authors:
-- Leonardo Celi (lgc59)
-- Ammar Ghauri (amg610)
+Leonardo Celi (lgc59)
+Ammar Ghauri (amg610)
 
 ## Design Notes:
-Description
+Description of mymalloc.c library
+---------------------------------
 Header Definitions:
 Our libary, mymalloc.c, begins with standard C library includes (stdio.h, stdlib.h, unistd.h, string.h) and includes a custom header file mymalloc.h. Preprocessor directives define constants such as MEMSIZE, HEADERSIZE, OBJECTS, OBJSIZE, and MEMLENGTH to manage memory allocation parameters. Additionally, a static array memory of type double serves as the memory pool for dynamic allocation.
 
 Data Structures:
-	A chunkNode struct was used to define and represent metadata associated with each memory chunk. It contains two fields: size, indicating the size of the payload of the chunk, and allocated, indicating whether the chunk is in use or free. These fields are stored as two integer variables, making the chunkNode structure or the header/metadata exactly 8 bytes.
+A chunkNode struct was used to define and represent metadata associated with each memory chunk. It contains two fields: size, indicating the size of the payload of the chunk, and allocated, indicating whether the chunk is in use or free. These fields are stored as two integer variables, making the chunkNode structure or the header/metadata exactly 8 bytes.
 
 Memory Initialization:
-	The initializeMemory() function sets up the initial state of the memory pool. It initializes the first chunk with the total memory size minus the header size and marks it as free. This function is called only once, during the first call to mymalloc. 
+The initializeMemory() function sets up the initial state of the memory pool. It initializes the first chunk with the total memory size minus the header size and marks it as free. This function is called only once, during the first call to mymalloc. 
 
 Memory Allocation (mymalloc()):
-- The mymalloc() function that was coded is responsible for allocating memory of the requested size. It performs the following steps:
+The mymalloc() function that was coded is responsible for allocating memory of the requested size. It performs the following steps:
   	- Checks if the requested size is zero and returns NULL if so.
   	- Initializes the memory array if it hasn't been previously initialized.
   	- Rounds up the requested size to the nearest multiple of 8 for alignment.
@@ -25,13 +26,13 @@ Memory Allocation (mymalloc()):
   	- Implements splitting of large chunks to avoid fragmentation.
 
 Memory Deallocation (myfree()):
-- The myfree() function deallocates memory previously allocated by mymalloc(). Key features include:
+The myfree() function deallocates memory previously allocated by mymalloc(). Key features include:
 	- Checks if the pointer provided is NULL and returns without performing any actions.
 	- Validates that the pointer points to a valid memory chunk allocated by mymalloc().		
 	- Marks the corresponding memory block as free and updates metadata accordingly
 	- Implements coalescing of adjacent free chunks to prevent memory fragmentation.
 	- Error Handling
-	- Both mymalloc() and myfree() functions incorporate error handling mechanisms to detect and report common usage errors. They utilize the 		__FILE__ and __LINE__ macros to capture source file names and line numbers for error reporting.
+	- Both mymalloc() and myfree() functions incorporate error handling mechanisms to detect and report common usage errors. They utilize the __FILE__ and __LINE__ macros to capture source file names and line numbers for error reporting.
 
 Design Rationale
 -----------------
@@ -47,13 +48,10 @@ To ensure memory alignment and accommodate small allocations, mymalloc() rounds 
 Error Detection and Reporting:
 The implementation incorporates robust error detection mechanisms to identify common usage errors, such as double frees or invalid memory accesses. By leveraging preprocessor macros for file and line number tracking, it provides informative error messages for debugging and troubleshooting.
 
-Conclusion:
-The custom memory allocation implementation offers a lightweight yet reliable solution for dynamic memory management in C programs. By adhering to established design principles and incorporating error handling mechanisms, it aims to enhance program robustness and facilitate memory-related debugging. Further optimization and customization can be achieved based on specific project requirements and performance considerations.
-
 Testing
 ----------
 Elapsed time testing of malloc and free functions (memgrind.c):
-- Our memgrind.c tests the functionality, robustness, and the efficiency of our code by randomly choosing between allocating and deallocating 1-byte objects. This is done until 120 objects have been allocated. However, during the first 50 iterations of allocations, the program will record the time it takes our malloc function to allocate a 1-byte object, and then return to the memgrind.c program to execute the next instruction. Similarly, during the first 50 iterations of deallocations, the program will record the time it takes our free function to deallocate a previously allocated 1-byte object, and then return to the memgrind.c program to execut the next instruction. As noted through comments inside of our memgrind.c program, it is possible that the number of deallocations that occurs never reaches 50, since the program is desinged to randomly choose between allocating and deallocating. However, the number of allocations will reach 50, because the code is designed to continue until 120 allocations have been completed. Through a number of trials however, we've determined that the number of deallocations did reach into the 40's essentially every time, and sometimes 50's. Therefore, we figured, with regard to accuracy, that it would be sufficient to record the average of however many times the free function runs rather than 50, as the number may not be 50, but will more than likely be very close, if not 50. After determining the averages of the elapsed time for the mymalloc and myfree functions to complete an allocation/deallocation, the memgrind.c program will free any remaining allocated objects in the heap using again our myfree function.
+Our memgrind.c program tests the functionality, robustness, and the efficiency of our code by randomly choosing between allocating and deallocating 1-byte objects. This is done until 120 objects have been allocated. However, during the first 50 iterations of allocations, the program will record the time it takes our malloc function to allocate a 1-byte object, and then return to the memgrind.c program to execute the next instruction. Similarly, during the first 50 iterations of deallocations, the program will record the time it takes our free function to deallocate a previously allocated 1-byte object, and then return to the memgrind.c program to execut the next instruction. As noted through comments inside of our memgrind.c program, it is possible that the number of deallocations that occurs never reaches 50, since the program is designed to randomly choose between allocating and deallocating. However, the number of allocations will reach 50, because the code is designed to continue until 120 allocations have been completed. Through a number of trials however, we've determined that the number of deallocations did reach into the 40's essentially every time, and sometimes 50's. Therefore, we figured, with regard to accuracy, that it would be sufficient to record the average of however many times the free function runs rather than 50, as the number may not be 50, but will more than likely be very close, if not 50. After determining the averages of the elapsed time for the mymalloc and myfree functions to complete an allocation/deallocation, the memgrind.c program will free any remaining allocated objects in the heap using again our myfree function.
 
 Additional tests for error detection 
 - Test1: freeAddressOutsideHeap.c

@@ -67,3 +67,6 @@ Additional tests for error detection
 
 - Test4: nonAllocatedAddress.c
 	- Allocates 4 bytes of memory, and stores the address in a pointer variable. The pointer is then passed to our free function, after which the code attempts to free this address, yet again. Our code recognizes this issue and will return with an error, stating that this code is attempting to free memory that has already been freed.
+
+- Test5: tooMuchMemory.c
+	- This simply includes an allocation of an amount of bytes that is more than the entire available memory. Our code wil recognize this and will return with an error, stating that there is no chunk of unallocated memory, that can hold the requested amount of bytes. 
